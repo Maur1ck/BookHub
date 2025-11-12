@@ -13,8 +13,7 @@ sys.path.append(str(Path(__file__).parent.parent.parent))
 from app.config import settings
 from app.database import Base
 from app.models.books import BooksOrm
-from app.models.roles import RolesOrm
-from app.models.roles import UsersRolesOrm
+from app.models.roles import RolesOrm, UsersRolesOrm
 from app.models.users import UsersOrm
 
 

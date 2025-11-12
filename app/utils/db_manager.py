@@ -1,4 +1,5 @@
 from app.repositories.books import BooksRepository
+from app.repositories.users import UserRepository
 
 
 class DBManager:
@@ -9,6 +10,7 @@ class DBManager:
         self.session = self.session_factory()
 
         self.books = BooksRepository(self.session)
+        self.users = UserRepository(self.session)
 
         return self
 
