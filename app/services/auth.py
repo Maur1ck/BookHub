@@ -1,4 +1,9 @@
+from datetime import datetime, timezone, timedelta
+
+import jwt
 from passlib.context import CryptContext
+
+from app.config import settings
 
 
 class AuthService:
@@ -6,3 +11,20 @@ class AuthService:
 
     def hash_password(self, password: str) -> str:
         return self.pwd_context.hash(password)
+
+    def verify_password(self, password: str, hashed_password: str):
+        return self.pwd_context.verify(password, hashed_password)
+
+    def create_access_token(self, data: dict):
+        to_encode = data.copy()
+        expire = datetime.now(timezone.utc) + timedelta(
+            minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES
+        )
+        to_encode |= {"exp": expire}
+        encoded_jwt = jwt.encode(
+            to_encode, settings.JWT_SECRET_KEY, algorithm=settings.JWT_ALGORITHM
+        )
+        return encoded_jwt
+
+    def decode_token(self, token: str):
+        return jwt.decode(token, settings.JWT_SECRET_KEY, algorithms=[settings.JWT_ALGORITHM])
