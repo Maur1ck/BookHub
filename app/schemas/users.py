@@ -9,6 +9,7 @@ class UserRequestAdd(BaseModel):
 class UserAdd(BaseModel):
     email: EmailStr
     hashed_password: str
+    role: str
 
 
 class User(BaseModel):

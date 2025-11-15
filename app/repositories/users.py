@@ -13,4 +13,6 @@ class UserRepository(BaseRepository):
         query = select(self.model).where(self.model.email == email)
         result = await self.session.execute(query)
         model =  result.scalars().first()
+        if model is None:
+            return None
         return UserWithHashedPassword.model_validate(model, from_attributes=True)

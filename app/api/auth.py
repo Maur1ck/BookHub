@@ -2,6 +2,7 @@ from fastapi import APIRouter, HTTPException, Response
 from sqlalchemy.exc import IntegrityError
 
 from app.api.dependencies import DBDep, UserIdDep
+from app.models.users import RoleName
 from app.schemas.users import UserRequestAdd, UserAdd
 from app.services.auth import AuthService
 
@@ -11,7 +12,7 @@ router = APIRouter(prefix="/auth", tags=["Аутентификация и вто
 @router.post("/register")
 async def register_user(data: UserRequestAdd, db: DBDep):
     hashed_password = AuthService().hash_password(data.password)
-    user_data = UserAdd(email=data.email, hashed_password=hashed_password)
+    user_data = UserAdd(email=data.email, hashed_password=hashed_password, role=RoleName.USER)
     try:
         await db.users.add(user_data)
         await db.commit()
