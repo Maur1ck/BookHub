@@ -1,4 +1,4 @@
-from fastapi import APIRouter, HTTPException, Response
+from fastapi import APIRouter, HTTPException, Response, Request
 from sqlalchemy.exc import IntegrityError
 
 from app.api.dependencies import DBDep, UserIdDep
@@ -34,7 +34,9 @@ async def login_user(data: UserRequestAdd, response: Response, db: DBDep):
 
 
 @router.post("/logout")
-def logout_user(response: Response):
+def logout_user(response: Response, request: Request):
+    if request.cookies.get("access_token") is None:
+        raise HTTPException(status_code=400, detail="Already logged out")
     response.delete_cookie(key="access_token")
     return {"status": "OK", "message": "Logged out"}
 
