@@ -1,6 +1,7 @@
 from typing import Annotated
 
 from fastapi import Depends, Request, HTTPException
+from jwt import ExpiredSignatureError
 
 from app.database import async_session_maker
 from app.services.auth import AuthService
@@ -22,8 +23,11 @@ def get_token(request: Request):
 
 
 def get_current_user_id(token: str = Depends(get_token)):
-    data = AuthService().decode_token(token)
+    try:
+        data = AuthService().decode_token(token)
+    except ExpiredSignatureError:
+        raise HTTPException(status_code=401, detail="Срок действия вашего JWT токена истек.")
     return data.get("user_id")
 
 
-UserIdDep = Annotated[int, Depends()]
+UserIdDep = Annotated[int, Depends(get_current_user_id)]

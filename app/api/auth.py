@@ -1,7 +1,7 @@
 from fastapi import APIRouter, HTTPException, Response
 from sqlalchemy.exc import IntegrityError
 
-from app.api.dependencies import DBDep
+from app.api.dependencies import DBDep, UserIdDep
 from app.schemas.users import UserRequestAdd, UserAdd
 from app.services.auth import AuthService
 
@@ -30,3 +30,14 @@ async def login_user(data: UserRequestAdd, response: Response, db: DBDep):
     access_token = AuthService().create_access_token({"user_id": user.id})
     response.set_cookie(key="access_token", value=access_token)
     return {"access_token": access_token}
+
+
+@router.post("/logout")
+def logout_user(response: Response):
+    response.delete_cookie(key="access_token")
+    return {"status": "OK", "message": "Logged out"}
+
+
+@router.get("/me")
+async def get_me(user_id: UserIdDep, db: DBDep):
+    return await db.users.get_one_or_none(id=user_id)
