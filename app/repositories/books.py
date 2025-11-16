@@ -3,4 +3,4 @@ from app.repositories.base import BaseRepository
 
 
 class BooksRepository(BaseRepository):
-    models = BooksOrm
+    model = BooksOrm
