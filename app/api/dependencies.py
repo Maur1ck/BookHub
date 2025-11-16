@@ -3,7 +3,7 @@ from typing import Annotated
 from fastapi import Depends, Request, HTTPException
 from jwt import ExpiredSignatureError
 
-from app.database import async_session_maker
+from app.core.database import async_session_maker
 from app.services.auth import AuthService
 from app.utils.db_manager import DBManager
 

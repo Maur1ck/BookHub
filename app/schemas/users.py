@@ -1,7 +1,7 @@
 from pydantic import BaseModel, EmailStr, field_validator
 
 
-class UserRequestAdd(BaseModel):
+class UserAddRequest(BaseModel):
     email: EmailStr
     password: str
 

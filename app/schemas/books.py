@@ -1,10 +1,10 @@
 from pydantic import BaseModel
 
 
-class BookRequestAdd(BaseModel):
+class BookAddRequest(BaseModel):
     title: str
     description: str
 
 
-class BookAdd(BookRequestAdd):
+class BookAdd(BookAddRequest):
     author_id: int
