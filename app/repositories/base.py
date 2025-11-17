@@ -2,7 +2,7 @@ from pydantic import BaseModel
 from sqlalchemy import select, insert
 from sqlalchemy.exc import NoResultFound
 
-from app.exceptions import ObjectNotFoundException
+from app.core.exceptions import ObjectNotFoundException
 
 
 class BaseRepository:
