@@ -1,0 +1,23 @@
+[project]
+name = "bookhub"
+version = "0.1.0"
+description = "API Service for books"
+requires-python = ">=3.11"
+dependencies = [
+    "alembic>=1.17.2",
+    "asyncpg>=0.30.0",
+    "bcrypt==4.3.0",
+    "email-validator>=2.3.0",
+    "fastapi>=0.121.2",
+    "passlib>=1.7.4",
+    "pydantic-settings>=2.12.0",
+    "pyjwt>=2.10.1",
+    "sqlalchemy>=2.0.44",
+    "uvicorn[standard]>=0.38.0",
+]
+
+[dependency-groups]
+dev = [
+    "pyright>=1.1.407",
+    "ruff>=0.14.5",
+]
