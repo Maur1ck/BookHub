@@ -11,11 +11,14 @@ class BaseRepository:
     def __init__(self, session):
         self.session = session
 
-    async def get_all(self):
-        query = select(self.model)
-        results = await self.session.execute(query)
-        model = results.scalars().all()
+    async def get_filtered(self, *filter, **filters):
+        query = select(self.model).filter(*filter).filter_by(**filters)
+        result = await self.session.execute(query)
+        model = result.scalars().all()
         return model
+
+    async def get_all(self):
+        return self.get_filtered()
 
     async def get_one_or_none(self, **filters):
         query = select(self.model).filter_by(**filters)

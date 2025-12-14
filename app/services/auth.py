@@ -51,6 +51,3 @@ class AuthService(BaseService):
             raise HTTPException(status_code=401, detail="Пароль неверный")
         access_token = self.create_access_token({"user_id": user.id})
         return access_token
-
-    async def get_one_or_none_user(self, user_id: int):
-        return await self.db.users.get_one_or_none(id=user_id)

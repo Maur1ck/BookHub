@@ -13,6 +13,9 @@ class BooksService(BaseService):
         except ObjectNotFoundException:
             raise ObjectNotFoundHTTPException
 
+    async def get_books_by_author(self, user_id: int):
+        return await self.db.books.get_filtered(author_id=user_id)
+
     async def create_book(self, data: BookAddRequest, user_id: int):
         new_data = BookAdd(**data.model_dump(), author_id=user_id)
         book = await self.db.books.add(new_data)
