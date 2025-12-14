@@ -31,8 +31,9 @@ async def add_book(data: BookAddRequest, db: DBDep, current_user: AuthorOrAdminD
 
 
 @router.put("/{book_id}")
-async def update_book():
-    ...
+async def update_book(book_id: int, data: BookAddRequest, db: DBDep, current_user: AuthorOrAdminDep):
+    await BooksService(db).update_book(book_id, data, current_user.id)
+    return {"status": "OK"}
 
 
 @router.patch("/{book_id}")

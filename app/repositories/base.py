@@ -1,8 +1,9 @@
 from pydantic import BaseModel
-from sqlalchemy import select, insert
+from sqlalchemy import select, insert, update
 from sqlalchemy.exc import NoResultFound
 
 from app.core.exceptions import ObjectNotFoundException
+from app.models.books import BooksOrm
 
 
 class BaseRepository:
@@ -18,7 +19,7 @@ class BaseRepository:
         return model
 
     async def get_all(self):
-        return self.get_filtered()
+        return await self.get_filtered()
 
     async def get_one_or_none(self, **filters):
         query = select(self.model).filter_by(**filters)
@@ -38,5 +39,11 @@ class BaseRepository:
     async def add(self, data: BaseModel):
         add_stmt = insert(self.model).values(**data.model_dump()).returning(self.model)
         result = await self.session.execute(add_stmt)
+        model = result.scalar_one()
+        return model
+
+    async def update(self, book_id: int, data: BaseModel):
+        stmt = update(self.model).where(BooksOrm.id==book_id).values(**data.model_dump()).returning(self.model)
+        result = await self.session.execute(stmt)
         model = result.scalar_one()
         return model
