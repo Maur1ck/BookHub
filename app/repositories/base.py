@@ -1,5 +1,5 @@
 from pydantic import BaseModel
-from sqlalchemy import select, insert, update
+from sqlalchemy import select, insert, update, delete
 from sqlalchemy.exc import NoResultFound
 
 from app.core.exceptions import ObjectNotFoundException
@@ -49,3 +49,7 @@ class BaseRepository:
             .values(**data.model_dump(exclude_unset=exclude_unset))
         )
         await self.session.execute(stmt)
+
+    async def delete(self, **filters):
+        delete_data_stmt = delete(self.model).filter_by(**filters)
+        await self.session.execute(delete_data_stmt)

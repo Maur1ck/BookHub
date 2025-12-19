@@ -38,3 +38,10 @@ class BooksService(BaseService):
             raise HTTPException(status_code=404, detail="Вы не автор")
         await self.db.books.edit(data, exclude_unset=True, id=book_id)
         await self.db.commit()
+
+    async def delete_book(self, book_id: int, user):
+        book = await self.get_book(book_id)
+        if book.author_id != user.id and user.role != "admin":
+            raise HTTPException(status_code=404, detail="Вы не автор")
+        await self.db.books.delete(id=book_id)
+        await self.db.commit()

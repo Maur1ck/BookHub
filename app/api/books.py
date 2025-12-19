@@ -54,5 +54,6 @@ async def update_book_partially(
 
 
 @router.delete("/{book_id}")
-async def delete_book(book_id: int, db: DBDep, user_id: UserIdDep):
-    ...
+async def delete_book(book_id: int, db: DBDep, current_user: AuthorOrAdminDep):
+    await BooksService(db).delete_book(book_id, current_user)
+    return {"status": "OK"}
