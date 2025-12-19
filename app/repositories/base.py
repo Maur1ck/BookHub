@@ -42,8 +42,10 @@ class BaseRepository:
         model = result.scalar_one()
         return model
 
-    async def update(self, book_id: int, data: BaseModel):
-        stmt = update(self.model).where(BooksOrm.id==book_id).values(**data.model_dump()).returning(self.model)
-        result = await self.session.execute(stmt)
-        model = result.scalar_one()
-        return model
+    async def edit(self, data: BaseModel, exclude_unset=False, **filters):
+        stmt = (
+            update(self.model)
+            .filter_by(**filters)
+            .values(**data.model_dump(exclude_unset=exclude_unset))
+        )
+        await self.session.execute(stmt)

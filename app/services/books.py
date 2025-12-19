@@ -3,6 +3,7 @@ from fastapi import HTTPException
 from app.core.exceptions import ObjectNotFoundException, ObjectNotFoundHTTPException
 from app.schemas.books import BookAddRequest, BookAdd
 from app.services.base import BaseService
+from app.schemas.books import BookPatch
 
 
 class BooksService(BaseService):
@@ -24,12 +25,16 @@ class BooksService(BaseService):
         await self.db.commit()
         return book
 
-    async def update_book(self, book_id: int, data: BookAddRequest, user_id: int):
+    async def edit_book(self, book_id: int, data: BookAddRequest, user_id: int):
         book = await self.get_book(book_id)
-        if book is None:
-            raise ObjectNotFoundHTTPException
         if book.author_id != user_id:
             raise HTTPException(status_code=404, detail="Вы не автор")
-        update_book = await self.db.books.update(book.id, data)
+        await self.db.books.edit(data, id=book_id)
         await self.db.commit()
-        return update_book
+
+    async def edit_book_partially(self, book_id: int, data: BookPatch, user_id: int):
+        book = await self.get_book(book_id)
+        if book.author_id != user_id:
+            raise HTTPException(status_code=404, detail="Вы не автор")
+        await self.db.books.edit(data, exclude_unset=True, id=book_id)
+        await self.db.commit()
