@@ -7,8 +7,8 @@ class BookAddRequest(BaseModel):
 
 
 class BookPatch(BaseModel):
-    title: str | None
-    description: str | None
+    title: str | None = None
+    description: str | None = None
 
 
 class BookAdd(BookAddRequest):

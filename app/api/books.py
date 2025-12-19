@@ -38,7 +38,7 @@ async def update_book(
         db: DBDep,
         current_user: AuthorOrAdminDep
 ):
-    await BooksService(db).edit_book(book_id, data, current_user.id)
+    await BooksService(db).edit_book(book_id, data, current_user)
     return {"status": "OK"}
 
 
@@ -49,7 +49,7 @@ async def update_book_partially(
         db: DBDep,
         current_user: AuthorOrAdminDep
 ):
-    await BooksService(db).edit_book_partially(book_id, data, current_user.id)
+    await BooksService(db).edit_book_partially(book_id, data, current_user)
     return {"status": "OK"}
 
 

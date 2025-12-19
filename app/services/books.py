@@ -25,16 +25,16 @@ class BooksService(BaseService):
         await self.db.commit()
         return book
 
-    async def edit_book(self, book_id: int, data: BookAddRequest, user_id: int):
+    async def edit_book(self, book_id: int, data: BookAddRequest, user):
         book = await self.get_book(book_id)
-        if book.author_id != user_id:
+        if book.author_id != user.id and user.role != "admin":
             raise HTTPException(status_code=404, detail="Вы не автор")
         await self.db.books.edit(data, id=book_id)
         await self.db.commit()
 
-    async def edit_book_partially(self, book_id: int, data: BookPatch, user_id: int):
+    async def edit_book_partially(self, book_id: int, data: BookPatch, user):
         book = await self.get_book(book_id)
-        if book.author_id != user_id:
+        if book.author_id != user.id and user.role != "admin":
             raise HTTPException(status_code=404, detail="Вы не автор")
         await self.db.books.edit(data, exclude_unset=True, id=book_id)
         await self.db.commit()
