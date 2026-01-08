@@ -3,7 +3,6 @@ from sqlalchemy import select, insert, update, delete
 from sqlalchemy.exc import NoResultFound
 
 from app.core.exceptions import ObjectNotFoundException
-from app.models.books import BooksOrm
 
 
 class BaseRepository:
@@ -12,14 +11,18 @@ class BaseRepository:
     def __init__(self, session):
         self.session = session
 
-    async def get_filtered(self, *filter, **filters):
+    async def get_filtered(self, *filter, limit: int | None = None, offset: int | None = None, **filters):
         query = select(self.model).filter(*filter).filter_by(**filters)
+        if limit is not None:
+            query = query.limit(limit)
+        if offset is not None:
+            query = query.offset(offset)
         result = await self.session.execute(query)
         model = result.scalars().all()
         return model
 
-    async def get_all(self):
-        return await self.get_filtered()
+    async def get_all(self, limit: int | None = None, offset: int | None = None, **filters):
+        return await self.get_filtered(limit=limit, offset=offset, **filters)
 
     async def get_one_or_none(self, **filters):
         query = select(self.model).filter_by(**filters)

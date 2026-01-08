@@ -1,12 +1,28 @@
 from typing import Annotated
 
-from fastapi import Depends, Request, HTTPException
+from fastapi import Depends, Request, HTTPException, Query
 from jwt import ExpiredSignatureError
+from pydantic import BaseModel
 
 from app.core.database import async_session_maker
 from app.models.users import UsersOrm, RoleName
 from app.services.auth import AuthService
 from app.utils.db_manager import DBManager
+
+
+class PaginationParams(BaseModel):
+    page: Annotated[int, Query(1, ge=1, description="Номер страницы")]
+    per_page: Annotated[int, Query(10, ge=1, lt=30, description="Количество элементов на странице")]
+
+    @property
+    def limit(self) -> int:
+        return self.per_page
+
+    @property
+    def offset(self) -> int:
+        return (self.page - 1) * self.per_page
+
+PaginationDep = Annotated[PaginationParams, Depends()]
 
 
 async def get_db():

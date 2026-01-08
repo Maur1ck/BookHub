@@ -1,6 +1,6 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, Query
 
-from app.api.dependencies import DBDep, UserIdDep, AuthorOrAdminDep
+from app.api.dependencies import DBDep, UserIdDep, AuthorOrAdminDep, PaginationDep
 from app.schemas.books import BookAddRequest
 from app.services.books import BooksService
 from app.schemas.books import BookPatch
@@ -8,10 +8,13 @@ from app.schemas.books import BookPatch
 router = APIRouter(prefix="/books", tags=["Книги"])
 
 
-# добавить некую фильтрацию
 @router.get("/", summary="Публичный список книг")
-async def get_books(db: DBDep):
-    return await BooksService(db).get_books()
+async def get_books(
+        pagination: PaginationDep,
+        db: DBDep,
+        title: str | None = Query(default=None, description="Фильтр по названию")
+):
+    return await BooksService(db).get_books(limit=pagination.limit, offset=pagination.offset, title=title)
 
 
 @router.get("/my", summary="Книги текущего автора")
